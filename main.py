@@ -18,11 +18,27 @@ llm=ChatOpenAI(
 )
 
 context=[
-    SystemMessage(content="Respond to the user query")
+    SystemMessage(content="""
+You are a My sql ReAct agent , your task is to generate the mysql queries accrding to the users nees
+""")
 ]
 
-user_input=input("Query: ")
-context.append(HumanMessage(content=user_input))
+tool_binded_llm=llm.bind_tools(
+    [
+        query_executor,
+        take_user_input
+    ]
+)
+while True:
+    user_input=input("Query: ")
+    context.append(HumanMessage(content=user_input))
 
-response=llm.invoke(context)
-print(response.content)
+    response=tool_binded_llm.invoke(context)
+    context.append(AIMessage(response.content))
+    
+    if not response.content:
+        
+        print(response.tool_calls)
+
+    else:
+        print(response.content)
