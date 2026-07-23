@@ -4,22 +4,31 @@ from langchain_core.tools import tool
 
 
 @tool
-def query_executor(query:str):
+def query_executor(query: str):
     """
-    Executes a query on the mysql database
+    Executes one or more MySQL statements.
     """
-    print("Db executed")
+    conn = create_connection()
+    cursor = conn.cursor()
 
-    conn=create_connection()
-    cursor=conn.cursor()
-    cursor.execute(query)
-    if cursor.description:
-        return cursor.fetchall()
-    else:
+    results = []
+
+    try:
+        for result in cursor.execute(query, multi=True):
+            if result.with_rows:
+                results.append(result.fetchall())
+
         conn.commit()
-        return "query executed successuflly"
-    cursor.close()
-    conn.close()
+
+        if results:
+            return results
+
+        return "Query executed successfully."
+
+    finally:
+        cursor.close()
+        conn.close()
+    
 
     
     

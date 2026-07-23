@@ -4,7 +4,7 @@ agent= SQLReActAgent()
 
 while True:
     user_input=input("Query: ")
-    answer=agent.invoke(user_input)
+    answer=agent.graph_invoke(user_input)
     print(answer)
 
    
