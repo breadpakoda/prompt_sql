@@ -8,7 +8,7 @@ def query_executor(query:str):
     """
     Executes a query on the mysql database
     """
-
+    print("Db executed")
 
     conn=create_connection()
     cursor=conn.cursor()
